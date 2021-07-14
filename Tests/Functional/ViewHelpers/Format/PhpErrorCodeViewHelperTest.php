@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,31 +15,14 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace TYPO3\CMS\Install\Tests\Unit\ViewHelpers\Format;
+namespace TYPO3\CMS\Install\Tests\Functional\ViewHelpers\Format;
 
-use TYPO3\CMS\Install\ViewHelpers\Format\PhpErrorCodeViewHelper;
-use TYPO3\TestingFramework\Fluid\Unit\ViewHelpers\ViewHelperBaseTestcase;
+use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * Test case
- */
-class PhpErrorCodeViewHelperTest extends ViewHelperBaseTestcase
+class PhpErrorCodeViewHelperTest extends FunctionalTestCase
 {
-    /**
-     * @var \TYPO3\CMS\Fluid\ViewHelpers\Format\NumberViewHelper
-     */
-    protected $viewHelper;
-
-    /**
-     * Setup the test case scenario
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->viewHelper = new PhpErrorCodeViewHelper();
-        $this->injectDependenciesIntoViewHelper($this->viewHelper);
-        $this->viewHelper->initializeArguments();
-    }
+    protected $coreExtensionsToLoad = ['install'];
 
     /**
      * @return array
@@ -65,17 +50,14 @@ class PhpErrorCodeViewHelperTest extends ViewHelperBaseTestcase
     }
 
     /**
-     * @param $errorCode
-     * @param $expectedString
      * @test
      * @dataProvider errorCodesDataProvider
      */
-    public function renderPhpCodesCorrectly($errorCode, $expectedString): void
+    public function renderPhpCodesCorrectly(int $errorCode, string $expected): void
     {
-        $this->viewHelper->setArguments([
-            'phpErrorCode' => $errorCode
-        ]);
-        $actualString = $this->viewHelper->render();
-        self::assertEquals($expectedString, $actualString);
+        $view = new StandaloneView();
+        $view->getRenderingContext()->getViewHelperResolver()->addNamespace('install', 'TYPO3\\CMS\\Install\\ViewHelpers');
+        $view->setTemplateSource('<install:format.phpErrorCode phpErrorCode="' . $errorCode . '" />');
+        self::assertSame($expected, $view->render());
     }
 }
