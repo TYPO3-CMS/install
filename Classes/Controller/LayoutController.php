@@ -70,7 +70,7 @@ class LayoutController extends AbstractController
 
         $sitePath = $request->getAttribute('normalizedParams')->getSitePath();
         $importMap = $this->importMapFactory->create($sitePath);
-        $initModule = $sitePath . $importMap->resolveImport('@typo3/install/init-install.js');
+        $initModule = $importMap->resolveImport('@typo3/install/init-install.js', true, $sitePath);
 
         $view = $this->initializeView($request);
         $nonce = new ConsumableNonce();
