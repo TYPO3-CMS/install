@@ -101,13 +101,11 @@ final class MySqlTest extends UnitTestCase
 
         $subject->callCheckMySQLOrMariaDBVersion($connectionMock);
         $messages = $subject->getMessageQueue()->getAllMessagesAndFlush();
-        $firstMessage = $messages[0] ?? null;
-
         self::assertCount(1, $messages);
+
+        $firstMessage = $messages[0] ?? null;
         self::assertInstanceOf(FlashMessage::class, $firstMessage);
-        if ($firstMessage instanceof FlashMessage) {
-            self::assertSame($expectedTitle, $firstMessage->getTitle(), 'Message Title matches');
-            self::assertSame($expectedSeverity, $firstMessage->getSeverity(), 'Message Severity matches');
-        }
+        self::assertSame($expectedTitle, $firstMessage->getTitle(), 'Message Title matches');
+        self::assertSame($expectedSeverity, $firstMessage->getSeverity(), 'Message Severity matches');
     }
 }

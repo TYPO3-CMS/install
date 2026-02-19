@@ -64,7 +64,7 @@ class InterfaceMethodChangedMatcher extends AbstractCoreMatcher
         ) {
             $methodName = $node->name->name;
             $numberOfUsedArguments = 0;
-            if (isset($node->params) && is_array($node->params)) {
+            if (is_array($node->params ?? null)) {
                 $numberOfUsedArguments = count($node->params);
             }
             $numberOfAllowedArguments = $this->matcherDefinitions[$methodName]['newNumberOfArguments'];
@@ -84,7 +84,7 @@ class InterfaceMethodChangedMatcher extends AbstractCoreMatcher
         ) {
             $methodName = $node->name->name;
             $numberOfUsedArguments = 0;
-            if (isset($node->args) && is_array($node->args)) {
+            if (is_array($node->args ?? null)) {
                 $numberOfUsedArguments = count($node->args);
             }
             // @todo: Test for argument unpacking
