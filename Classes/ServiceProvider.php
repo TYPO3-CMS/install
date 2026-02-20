@@ -33,6 +33,7 @@ use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Localization\Locales;
+use TYPO3\CMS\Core\Localization\TranslationDomainMapper;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Mail\Mailer;
 use TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute as NormalizedParamsMiddleware;
@@ -78,6 +79,7 @@ class ServiceProvider extends AbstractServiceProvider
             Authentication\AuthenticationService::class => self::getAuthenticationService(...),
             Http\Application::class => self::getApplication(...),
             Http\NotFoundRequestHandler::class => self::getNotFoundRequestHandler(...),
+            Factory\ImportMapFactory::class => self::getImportMapFactory(...),
             Service\ClearCacheService::class => self::getClearCacheService(...),
             Service\ClearTableService::class => self::getClearTableService(...),
             Service\CoreUpdateService::class => self::getCoreUpdateService(...),
@@ -91,6 +93,7 @@ class ServiceProvider extends AbstractServiceProvider
             Service\SetupDatabaseService::class => self::getSetupDatabaseService(...),
             Middleware\Installer::class => self::getInstallerMiddleware(...),
             Middleware\Maintenance::class => self::getMaintenanceMiddleware(...),
+            Middleware\JavaScriptLanguageDomainProvider::class => self::getJavaScriptLanguageDomainProvider(...),
             Controller\EnvironmentController::class => self::getEnvironmentController(...),
             Controller\IconController::class => self::getIconController(...),
             Controller\InstallerController::class => self::getInstallerController(...),
@@ -133,6 +136,7 @@ class ServiceProvider extends AbstractServiceProvider
         $dispatcher->lazy(ResponsePropagationMiddleware::class);
         $dispatcher->lazy(Middleware\Installer::class);
         $dispatcher->add($container->get(Middleware\Maintenance::class));
+        $dispatcher->add($container->get(Middleware\JavaScriptLanguageDomainProvider::class));
         $dispatcher->lazy(NormalizedParamsMiddleware::class);
 
         return self::new($container, Http\Application::class, [
@@ -144,6 +148,14 @@ class ServiceProvider extends AbstractServiceProvider
     public static function getNotFoundRequestHandler(ContainerInterface $container): Http\NotFoundRequestHandler
     {
         return new Http\NotFoundRequestHandler();
+    }
+
+    public static function getImportMapFactory(ContainerInterface $container): Factory\ImportMapFactory
+    {
+        return new Factory\ImportMapFactory(
+            $container->get(FailsafePackageManager::class),
+            $container->get(HashService::class),
+        );
     }
 
     public static function getClearCacheService(ContainerInterface $container): Service\ClearCacheService
@@ -248,6 +260,14 @@ class ServiceProvider extends AbstractServiceProvider
         );
     }
 
+    public static function getJavaScriptLanguageDomainProvider(ContainerInterface $container): Middleware\JavaScriptLanguageDomainProvider
+    {
+        return new Middleware\JavaScriptLanguageDomainProvider(
+            $container->get(LanguageServiceFactory::class),
+            $container->get(TranslationDomainMapper::class),
+        );
+    }
+
     public static function getEnvironmentController(ContainerInterface $container): Controller\EnvironmentController
     {
         return new Controller\EnvironmentController(
@@ -274,6 +294,7 @@ class ServiceProvider extends AbstractServiceProvider
             $container->get(FormProtectionFactory::class),
             $container->get(SetupService::class),
             $container->get(SetupDatabaseService::class),
+            $container->get(Factory\ImportMapFactory::class),
             $container->get(HashService::class),
             $container->get(IconRegistry::class),
         );
@@ -282,10 +303,10 @@ class ServiceProvider extends AbstractServiceProvider
     public static function getLayoutController(ContainerInterface $container): Controller\LayoutController
     {
         return new Controller\LayoutController(
-            $container->get(FailsafePackageManager::class),
             $container->get(SilentConfigurationUpgradeService::class),
             $container->get(Service\SilentTemplateFileUpgradeService::class),
             $container->get(BackendEntryPointResolver::class),
+            $container->get(Factory\ImportMapFactory::class),
             $container->get(HashService::class),
             $container->get(IconRegistry::class),
         );

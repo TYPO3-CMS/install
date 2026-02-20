@@ -37,13 +37,13 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Middleware\VerifyHostHeader;
 use TYPO3\CMS\Core\Package\FailsafePackageManager;
-use TYPO3\CMS\Core\Page\ImportMap;
 use TYPO3\CMS\Core\Security\ContentSecurityPolicy\ConsumableNonce;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3\CMS\Fluid\View\FluidViewAdapter;
+use TYPO3\CMS\Install\Factory\ImportMapFactory;
 use TYPO3\CMS\Install\FolderStructure\DefaultFactory;
 use TYPO3\CMS\Install\Service\EnableFileService;
 use TYPO3\CMS\Install\Service\Exception\ConfigurationDirectoryDoesNotExistException;
@@ -73,6 +73,7 @@ final class InstallerController
         private readonly FormProtectionFactory $formProtectionFactory,
         private readonly SetupService $setupService,
         private readonly SetupDatabaseService $setupDatabaseService,
+        private readonly ImportMapFactory $importMapFactory,
         private readonly HashService $hashService,
         private readonly IconRegistry $iconRegistry,
     ) {}
@@ -86,13 +87,8 @@ final class InstallerController
         if (!Environment::getContext()->isDevelopment()) {
             $bust = $this->hashService->hmac((new Typo3Version()) . Environment::getProjectPath(), self::class);
         }
-        $packages = [
-            $this->packageManager->getPackage('core'),
-            $this->packageManager->getPackage('backend'),
-            $this->packageManager->getPackage('install'),
-        ];
-        $importMap = new ImportMap($this->hashService, $packages);
         $sitePath = $request->getAttribute('normalizedParams')->getSitePath();
+        $importMap = $this->importMapFactory->create($sitePath);
         $initModule = $sitePath . $importMap->resolveImport('@typo3/install/init-installer.js');
         $view = $this->initializeView($request);
         $view->assign('bust', $bust);
