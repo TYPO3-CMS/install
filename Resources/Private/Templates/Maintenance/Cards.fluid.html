@@ -8,7 +8,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Flush TYPO3 and PHP Cache', subtitle: 'Caching', icon: 'EXT:install/Resources/Public/Icons/modules/install-clear-cache.svg'}" />
         <div class="card-body">
-            <p class="card-text">This action directly clears all registered caches including opcode and dependency injection cache.</p>
+            <p class="card-text">Clear all registered TYPO3 caches, including opcode and dependency injection cache.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-inline="1"  data-import="@typo3/install/module/maintenance/cache.js">Flush cache</button>
@@ -17,7 +17,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Analyze Database Structure', subtitle: 'Database', icon: 'EXT:install/Resources/Public/Icons/modules/install-database-analyze.svg'}" />
         <div class="card-body">
-            <p class="card-text">Compare and update the database table and field definitions of your installation against the specification defined for every activated extension.</p>
+            <p class="card-text">Compare and update the database table and field definitions of your installation against the specification defined for activated extension.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-import="@typo3/install/module/maintenance/database-analyzer.js">Analyze database&hellip;</button>
@@ -26,7 +26,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Remove Temporary Assets', subtitle: 'Caching', icon: 'EXT:install/Resources/Public/Icons/modules/install-clear-files.svg'}" />
         <div class="card-body">
-            <p class="card-text">Clears temporary files including concatenated JS/CSS files and processed images.</p>
+            <p class="card-text">Clear temporary files including concatenated JS/CSS files and processed images.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-import="@typo3/install/module/maintenance/clear-typo3temp-files.js">Scan temporary files&hellip;</button>
@@ -35,12 +35,12 @@
     <div class="card card-size-small {f:if(condition:'{composerMode}', then: 'card-disabled')}">
         <f:render partial="Card/Header" arguments="{ title: 'Rebuild PHP Autoload Information', subtitle: 'Caching', icon: 'EXT:install/Resources/Public/Icons/modules/install-clear-autoload.svg'}" />
         <div class="card-body">
-            <p class="card-text">Resets autoload information for all active third party extensions.</p>
+            <p class="card-text">Reset autoload information for active third party extensions.</p>
         </div>
         <f:if condition="{composerMode}">
             <f:then>
                 <div class="card-footer text-variant">
-                    You can't use this feature, because your installation is in composer mode.
+                    This feature is unavailable because the installation is running in Composer mode.
                     Guide: <a href="https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/Autoloading/Index.html#loading-classes-with-composer-mode" target="_blank" rel="noreferrer">Composer dumpautoload</a>.
                 </div>
             </f:then>
@@ -54,7 +54,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Clear Persistent Database Tables', subtitle: 'Database', icon: 'EXT:install/Resources/Public/Icons/modules/install-clear-database.svg'}" />
         <div class="card-body">
-            <p class="card-text">Truncates persistent database tables, which are not related to caching.</p>
+            <p class="card-text">Truncate persistent database tables which are not related to caching.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-import="@typo3/install/module/maintenance/clear-tables.js">Scan tables&hellip;</button>
@@ -63,7 +63,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Check and Update Reference Index', subtitle: 'Database', icon: 'EXT:install/Resources/Public/Icons/modules/install-database-analyze.svg'}" />
         <div class="card-body">
-            <p class="card-text">The reference index tracks all database relations. Check for issues or rebuild the entire index.</p>
+            <p class="card-text">Verify the reference index for inconsistencies or rebuild it to update database relations.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-import="@typo3/install/module/maintenance/reference-index.js">Manage reference index&hellip;</button>
@@ -81,7 +81,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Reset Backend User Preferences', subtitle: 'Backend Users', icon: 'EXT:install/Resources/Public/Icons/modules/install-reset-user.svg'}" />
         <div class="card-body">
-            <p class="card-text">Clears preferences and settings for all backend users. The <code>uc</code> field is then set to an empty string.</p>
+            <p class="card-text">Clear preferences and settings for all backend users. This action permanently deletes all user-specific data in the database table <code>be_users</code>.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-inline="1"  data-import="@typo3/install/module/maintenance/reset-backend-user-uc.js">Reset backend user preferences</button>
@@ -90,7 +90,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Manage Language Packs', subtitle: 'Language', icon: 'EXT:install/Resources/Public/Icons/modules/install-manage-language.svg'}" />
         <div class="card-body">
-            <p class="card-text">Download and update language packs for installed extensions.</p>
+            <p class="card-text">Download and update language packs for installed extensions and the TYPO3 backend.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-import="@typo3/install/module/maintenance/language-packs.js">Manage languages&hellip;</button>
