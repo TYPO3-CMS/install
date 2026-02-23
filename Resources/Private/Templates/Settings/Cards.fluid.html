@@ -12,7 +12,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Extension Configuration', subtitle: 'Global Configuration', icon: 'EXT:install/Resources/Public/Icons/modules/install-extension-settings.svg'}" />
         <div class="card-body">
-            <p class="card-text">Configure settings for all enabled extensions.</p>
+            <p class="card-text">Configure settings for enabled extensions.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-import="@typo3/install/module/settings/extension-configuration.js">Configure extensions&hellip;</button>
@@ -30,7 +30,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Manage System Maintainers', subtitle: 'Access', icon: 'EXT:install/Resources/Public/Icons/modules/install-manage-maintainer.svg'}" />
         <div class="card-body">
-            <p class="card-text">Specify which backend administrators have access to the System modules and Install Tool when accessed in Standalone Mode.</p>
+            <p class="card-text">Specify which backend administrators can access System modules and the Install Tool in Standalone Mode.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-modal-size="medium" data-import="@typo3/install/module/settings/system-maintainer.js">Manage System Maintainers&hellip;</button>
@@ -57,7 +57,7 @@
     <div class="card card-size-small">
         <f:render partial="Card/Header" arguments="{ title: 'Configure Installation-Wide Options', subtitle: 'Global Configuration', icon: 'EXT:install/Resources/Public/Icons/modules/install-manage-settings.svg'}" />
         <div class="card-body">
-            <p class="card-text">Modify settings written to system/settings.php.</p>
+            <p class="card-text">Modify settings written to <code>system/settings.php</code>.</p>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-default" data-import="@typo3/install/module/settings/local-configuration.js">Configure options&hellip;</button>
