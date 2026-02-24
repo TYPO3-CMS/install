@@ -41,7 +41,7 @@ final class ImportMapFactory
             $this->packageManager->getPackage('backend'),
             $this->packageManager->getPackage('install'),
         ];
-        $bust = $GLOBALS['EXEC_TIME'];
+        $bust = (string)$GLOBALS['EXEC_TIME'];
         if (!Environment::getContext()->isDevelopment()) {
             $bust = $this->hashService->hmac((new Typo3Version()) . Environment::getProjectPath(), self::class);
         }
