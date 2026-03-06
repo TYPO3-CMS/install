@@ -122,7 +122,7 @@ class Maintenance implements MiddlewareInterface
             return $controller->showLoginAction($request);
         }
 
-        $this->sessionService->installSessionHandler();
+        $this->sessionService->installSessionHandler($request);
         // the backend user has an active session but the admin / maintainer
         // rights have been revoked or the user was disabled or deleted in the meantime
         if ($this->sessionService->isAuthorizedBackendUserSession($request) && !$this->sessionService->hasActiveBackendUserRoleAndSession()) {

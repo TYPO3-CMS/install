@@ -109,7 +109,7 @@ class BackendModuleController
         }
 
         $userSession = $this->getBackendUser()->getSession();
-        $this->sessionService->installSessionHandler();
+        $this->sessionService->installSessionHandler($request);
         $this->sessionService->startSession();
         $this->sessionService->setAuthorizedBackendSession($userSession);
         $normalizedParams = $request->getAttribute('normalizedParams');

@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Security\BlockSerializationTrait;
@@ -59,7 +60,7 @@ class SessionService implements SingletonInterface
 
     public function __construct(protected readonly LoggerInterface $logger) {}
 
-    public function installSessionHandler(): void
+    public function installSessionHandler(?ServerRequestInterface $request): void
     {
         // Register our "save" session handler
         $sessionHandlerClass = $GLOBALS['TYPO3_CONF_VARS']['BE']['installToolSessionHandler']['className'] ?? FileSessionHandler::class;
@@ -74,12 +75,14 @@ class SessionService implements SingletonInterface
             $sessionHandler = $this->getDefaultSessionHandler();
         }
 
+        $request = $request ?? ServerRequestFactory::fromGlobals();
+        $normalizedParams = $request->getAttribute('normalizedParams') ?? NormalizedParams::createFromRequest($request);
         session_set_save_handler($sessionHandler);
         session_name($this->cookieName);
-        ini_set('session.cookie_secure', GeneralUtility::getIndpEnv('TYPO3_SSL') ? 'On' : 'Off');
+        ini_set('session.cookie_secure', $normalizedParams->isHttps() ? 'On' : 'Off');
         ini_set('session.cookie_httponly', 'On');
         ini_set('session.cookie_samesite', Cookie::SAMESITE_STRICT);
-        ini_set('session.cookie_path', (string)GeneralUtility::getIndpEnv('TYPO3_SITE_PATH'));
+        ini_set('session.cookie_path', $normalizedParams->getSitePath());
         // Always call the garbage collector to clean up stale session files
         ini_set('session.gc_probability', (string)100);
         ini_set('session.gc_divisor', (string)100);
@@ -130,10 +133,11 @@ class SessionService implements SingletonInterface
     /**
      * Destroys a session
      */
-    public function destroySession(?ServerRequestInterface $request)
+    public function destroySession(?ServerRequestInterface $request): void
     {
         $request = $request ?? ServerRequestFactory::fromGlobals();
         if ($this->hasSessionCookie($request)) {
+            $normalizedParams = $request->getAttribute('normalizedParams') ?? NormalizedParams::createFromRequest($request);
             $this->initializeSession();
             $_SESSION = [];
             $params = session_get_cookie_params();
@@ -141,7 +145,7 @@ class SessionService implements SingletonInterface
                 ->withValue('0')
                 ->withPath($params['path'])
                 ->withDomain($params['domain'])
-                ->withSecure($params['samesite'] === Cookie::SAMESITE_NONE || GeneralUtility::getIndpEnv('TYPO3_SSL'))
+                ->withSecure($params['samesite'] === Cookie::SAMESITE_NONE || $normalizedParams->isHttps())
                 ->withHttpOnly($params['httponly'])
                 ->withSameSite($params['samesite']);
 
@@ -230,7 +234,7 @@ class SessionService implements SingletonInterface
      *
      * @return bool TRUE if this session has been authorized before (by a correct password)
      */
-    public function isAuthorized(ServerRequestInterface $request)
+    public function isAuthorized(ServerRequestInterface $request): bool
     {
         if (!$this->hasSessionCookie($request)) {
             return false;

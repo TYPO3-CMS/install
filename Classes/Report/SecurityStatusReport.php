@@ -41,7 +41,7 @@ final class SecurityStatusReport implements RequestAwareStatusProviderInterface
             $this->removeInstallToolEnableFilesIfRequested($request);
         }
         return [
-            'installToolProtection' => $this->getInstallToolProtectionStatus(),
+            'installToolProtection' => $this->getInstallToolProtectionStatus($request),
             'serverResponseStatus' => GeneralUtility::makeInstance(ServerResponseCheck::class)->asStatus(),
         ];
     }
@@ -56,7 +56,7 @@ final class SecurityStatusReport implements RequestAwareStatusProviderInterface
      *
      * @return Status An object representing whether ENABLE_INSTALL_TOOL exists
      */
-    private function getInstallToolProtectionStatus(): Status
+    private function getInstallToolProtectionStatus(?ServerRequestInterface $request): Status
     {
         $enableInstallToolFile = EnableFileService::getBestLocationForInstallToolEnableFile();
         // @todo: Note $this->getLanguageService() is declared to allow null. Calling ->sL() may fatal?!
@@ -66,8 +66,7 @@ final class SecurityStatusReport implements RequestAwareStatusProviderInterface
         if (EnableFileService::installToolEnableFileExists()) {
             if (EnableFileService::isInstallToolEnableFilePermanent()) {
                 $severity = ContextualFeedbackSeverity::WARNING;
-                // @todo: See todo on removeInstallToolEnableFilesIfRequested() when this GU::getIndpEnv() is about to be removed.
-                $disableInstallToolUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL') . '&adminCmd=remove_ENABLE_INSTALL_TOOL';
+                $disableInstallToolUrl = $request?->getAttribute('normalizedParams')?->getRequestUrl() . '&adminCmd=remove_ENABLE_INSTALL_TOOL';
                 $value = $this->getLanguageService()->sL('LLL:EXT:install/Resources/Private/Language/Report/locallang.xlf:status_enabledPermanently');
                 $message = sprintf(
                     $this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:warning.install_enabled'),
@@ -80,8 +79,7 @@ final class SecurityStatusReport implements RequestAwareStatusProviderInterface
                     EnableFileService::removeInstallToolEnableFile();
                 } else {
                     $severity = ContextualFeedbackSeverity::NOTICE;
-                    // @todo: See todo on removeInstallToolEnableFilesIfRequested() when this GU::getIndpEnv() is about to be removed.
-                    $disableInstallToolUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL') . '&adminCmd=remove_ENABLE_INSTALL_TOOL';
+                    $disableInstallToolUrl = $request?->getAttribute('normalizedParams')?->getRequestUrl() . '&adminCmd=remove_ENABLE_INSTALL_TOOL';
                     $value = $this->getLanguageService()->sL('LLL:EXT:install/Resources/Private/Language/Report/locallang.xlf:status_enabledTemporarily');
                     $message = sprintf(
                         $this->getLanguageService()->sL('LLL:EXT:install/Resources/Private/Language/Report/locallang.xlf:status_installEnabledTemporarily'),
