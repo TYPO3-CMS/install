@@ -37,8 +37,13 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Middleware\VerifyHostHeader;
 use TYPO3\CMS\Core\Package\FailsafePackageManager;
+use TYPO3\CMS\Core\Security\ContentSecurityPolicy\Configuration\Behavior;
 use TYPO3\CMS\Core\Security\ContentSecurityPolicy\ConsumableNonce;
+use TYPO3\CMS\Core\Security\ContentSecurityPolicy\DirectiveHashCollection;
+use TYPO3\CMS\Core\Security\ContentSecurityPolicy\Middleware\PolicyBag;
+use TYPO3\CMS\Core\Security\ContentSecurityPolicy\Scope;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Type\Map;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
@@ -76,6 +81,7 @@ final class InstallerController
         private readonly ImportMapFactory $importMapFactory,
         private readonly HashService $hashService,
         private readonly IconRegistry $iconRegistry,
+        private readonly DirectiveHashCollection $directiveHashCollection,
     ) {}
 
     /**
@@ -101,7 +107,7 @@ final class InstallerController
             $view->render('Installer/Init'),
             200,
             [
-                'Content-Security-Policy' => $this->createContentSecurityPolicy()->compile($nonce),
+                'Content-Security-Policy' => $this->createContentSecurityPolicy()->compile(new PolicyBag(Scope::backend(), new Map(), new Behavior(), $nonce, $this->directiveHashCollection)),
                 'Cache-Control' => 'no-cache, no-store',
                 'Pragma' => 'no-cache',
             ]

@@ -43,13 +43,16 @@ use TYPO3\CMS\Core\Middleware\VerifyHostHeader;
 use TYPO3\CMS\Core\Package\AbstractServiceProvider;
 use TYPO3\CMS\Core\Package\FailsafePackageManager;
 use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Core\Page\ResourceHashCollection;
 use TYPO3\CMS\Core\PasswordPolicy\Generator\PasswordGenerator;
 use TYPO3\CMS\Core\PasswordPolicy\PasswordService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Routing\BackendEntryPointResolver;
+use TYPO3\CMS\Core\Security\ContentSecurityPolicy\DirectiveHashCollection;
 use TYPO3\CMS\Core\Service\DatabaseUpgradeWizardsService;
 use TYPO3\CMS\Core\Service\SilentConfigurationUpgradeService;
 use TYPO3\CMS\Core\SystemResource\Publishing\SystemResourcePublisherInterface;
+use TYPO3\CMS\Core\SystemResource\SystemResourceFactory;
 use TYPO3\CMS\Core\TypoScript\AST\CommentAwareAstBuilder;
 use TYPO3\CMS\Core\TypoScript\AST\Traverser\AstTraverser;
 use TYPO3\CMS\Core\TypoScript\Tokenizer\LosslessTokenizer;
@@ -111,6 +114,7 @@ class ServiceProvider extends AbstractServiceProvider
             Command\SetupDefaultBackendUserGroupsCommand::class => self::getSetupDefaultBackendUserGroupsCommand(...),
             Database\PermissionsCheck::class => self::getPermissionsCheck(...),
             PasswordGenerator::class => self::getPasswordGenerator(...),
+            DirectiveHashCollection::class => self::getDirectiveHashCollection(...),
             Random::class => self::getRandom(...),
         ];
     }
@@ -313,6 +317,7 @@ class ServiceProvider extends AbstractServiceProvider
             $container->get(Factory\ImportMapFactory::class),
             $container->get(HashService::class),
             $container->get(IconRegistry::class),
+            $container->get(DirectiveHashCollection::class),
         );
     }
 
@@ -325,6 +330,7 @@ class ServiceProvider extends AbstractServiceProvider
             $container->get(Factory\ImportMapFactory::class),
             $container->get(HashService::class),
             $container->get(IconRegistry::class),
+            $container->get(DirectiveHashCollection::class),
         );
     }
 
@@ -413,6 +419,16 @@ class ServiceProvider extends AbstractServiceProvider
     public static function getPasswordGenerator(ContainerInterface $container): PasswordGenerator
     {
         return self::new($container, PasswordGenerator::class, [$container->get(Random::class)]);
+    }
+
+    public static function getDirectiveHashCollection(ContainerInterface $container): DirectiveHashCollection
+    {
+        return self::new($container, DirectiveHashCollection::class, [
+            new ResourceHashCollection(
+                $container->get(LogManager::class)->getLogger(ResourceHashCollection::class),
+                $container->get(SystemResourceFactory::class),
+            ),
+        ]);
     }
 
     public static function getRandom(ContainerInterface $container): Random
