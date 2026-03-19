@@ -510,6 +510,20 @@ return [
             'Deprecation-73606-DeprecateIconRegistrygetDeprecationSettings.rst',
         ],
     ],
+    'TYPO3\CMS\Core\Log\Writer\DatabaseWriter->getLogTable' => [
+        'numberOfMandatoryArguments' => 0,
+        'maximumNumberOfArguments' => 0,
+        'restFiles' => [
+            'Deprecation-109295-DatabaseWriterSetLogTableGetLogTable.rst',
+        ],
+    ],
+    'TYPO3\CMS\Core\Log\Writer\DatabaseWriter->setLogTable' => [
+        'numberOfMandatoryArguments' => 1,
+        'maximumNumberOfArguments' => 1,
+        'restFiles' => [
+            'Deprecation-109295-DatabaseWriterSetLogTableGetLogTable.rst',
+        ],
+    ],
     'TYPO3\CMS\Core\Messaging\FlashMessage->getIconName' => [
         'numberOfMandatoryArguments' => 0,
         'maximumNumberOfArguments' => 0,
