@@ -7,15 +7,17 @@
 <f:if condition="{context} == 'backend'">
     <f:then>
 
-        <div class="module" data-module-id="" data-module-name="{moduleName}">
+        <div class="module module-layout-normal" data-module-id="" data-module-name="{moduleName}">
             <div class="module-docheader module-docheader-navigation t3js-module-docheader-navigation">
                 <div class="module-docheader-column module-docheader-column-grow"></div>
                 <div class="module-docheader-column"></div>
             </div>
             <div class="module-body t3js-module-body">
-                <div id="t3js-ui-block" class="ui-block">
-                    <core:icon identifier="spinner-circle" size="large" />
-                    <h2 id="t3js-ui-block-detail">Loading cards</h2>
+                <div class="module-body-container t3js-module-body-container">
+                    <div id="t3js-ui-block" class="ui-block">
+                        <core:icon identifier="spinner-circle" size="large" />
+                        <h2 id="t3js-ui-block-detail">Loading cards</h2>
+                    </div>
                 </div>
             </div>
         </div>
@@ -153,9 +155,11 @@
                 <div class="scaffold-content-module t3js-scaffold-content-module">
                     <div class="module">
                         <div class="module-body t3js-module-body">
-                            <div id="t3js-ui-block" class="ui-block">
-                                <core:icon identifier="spinner-circle" size="large" />
-                                <h2 id="t3js-ui-block-detail">Loading cards</h2>
+                            <div class="module-body-container t3js-module-body-container">
+                                <div id="t3js-ui-block" class="ui-block">
+                                    <core:icon identifier="spinner-circle" size="large" />
+                                    <h2 id="t3js-ui-block-detail">Loading cards</h2>
+                                </div>
                             </div>
                         </div>
                     </div>
