@@ -28,20 +28,9 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class FileLocation
 {
-    /**
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * @var string
-     */
-    protected $filePath;
-
-    /**
-     * @var string
-     */
-    protected $baseUrl;
+    protected string $path;
+    protected string $filePath;
+    protected string $baseUrl;
 
     public function __construct(string $path)
     {
